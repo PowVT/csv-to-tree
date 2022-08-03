@@ -35,3 +35,5 @@ parsedData.forEach(function (node) {
 });
 
 if (DEBUG) console.log(treeData);
+
+root = treeData[0];
