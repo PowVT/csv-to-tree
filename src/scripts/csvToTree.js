@@ -37,40 +37,40 @@ parsedData.forEach(function (node) {
 
 if (DEBUG) console.log(treeData);
 
-root = treeData[0];
-
-const h = hierarchy(root);
-
-h.descendants().forEach((d, i) => {
-    d.id = `${i}`;
-    d._children = d.children;
-    d.children = null;
+//  data root (1st row) == input node
+dataRoot = treeData[0];
+// create root node
+const h = hierarchy(dataRoot);
+// 
+h.descendants().forEach((data, index) => {
+    data.id = `${index}`;
+    data._children = data.children;
+    data.children = null;
 });
 
 if (DEBUG) console.log(h._children)
-
+// node size
 const layout = tree().nodeSize([25, 200]);
-
+// color scale
 const colorScale = scaleLinear().domain([0, 5]).range(['#ff0072', '#0041d0']);
 
 function getElements() {
     const root = layout(h);
-
-    const nodes = root.descendants().map((d) => ({
-        id: d.id,
-        data: { label: d.data.name, depth: d.depth },
-        position: { x: d.y, y: d.x },
-        style: { padding: 0, backgroundColor: colorScale(d.depth), border: 'none', color: 'white', fontWeight: 'bold' },
+    const nodes = root.descendants().map((node) => ({
+        id: node.id,
+        data: { label: node.data.name, depth: node.depth },
+        position: { x: node.y, y: node.x },
+        style: { padding: 0, backgroundColor: colorScale(node.depth), border: 'none', color: 'white', fontWeight: 'bold' },
         //sourcePosition: Position.Right,
         //targetPosition: Position.Left,
-        type: d._children ? 'default' : 'output',
+        type: node._children ? 'default' : 'output',
     }));
 
-    const edges = root.links().map((d, i) => ({ id: `${i}`, source: d.source.id, target: d.target.id }));
+    const edges = root.links().map((edge, index) => ({ id: `${index}`, source: edge.source.id, target: edge.target.id }));
 
     return { nodes, edges };
 }
 
 const initialElements = getElements();
 
-console.log(initialElements.nodes);
+if (DEBUG) console.log(initialElements.nodes);
